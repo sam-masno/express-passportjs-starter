@@ -1,5 +1,5 @@
 # express-passportjs-starter
-This is RESTful API authentication system with passportjs equipped to handle authentication with google, facebook, and verified email.
+This is a RESTful API authentication system with passportjs equipped to handle authentication with google, facebook, and verified email.
 Cookies are used to serialize users.
 
 ## Installation
