@@ -5,6 +5,7 @@ const passport = require('passport')
 const User = require('./User')
 const uuid = require('uuid')
 const verificationTemplate = require('./verificationLink');
+const mailer = require('./mailer');
 
 
 //make sure you have created api credentials for each oauth provider
@@ -62,7 +63,7 @@ router.post('/api/auth/register', async (req, res, next) => {
                 to: [newUser.email],
                 from: 'no-reply@website.com',
                 subject: 'Follow the link to verify your account at WEBSITE',
-                text: `Follow the link to verify your account at http://localhost:3000/verify/${newUser.verificationLink}`,
+                text: `Follow the link to verify your account at http://website/${newUser.verificationLink}`,
                 html: verificationTemplate(newUser.verificationLink)
               };
             //send email return new users

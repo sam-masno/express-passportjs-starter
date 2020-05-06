@@ -25,14 +25,15 @@ app.use(passport.initialize());
 app.use(passport.session())
 
 //run passport and db as setup functions
-require('./services/db')(); 
-require('./services/passport/passport')()
+require('./db')(); 
+require('./passport')()
 
 //apply route handlers
 app.use(authRouter)
 
 app.use(( err, req, res, next) => {
     const { message, status } = err
+    err.stack = null;
     res.status( status || 500).send({ message : message || 'Server error'})
 })
 
