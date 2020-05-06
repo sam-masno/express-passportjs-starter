@@ -4,7 +4,7 @@ const LocalStrategy = require('passport-local');
 const FacebookStrategy = require('passport-facebook').Strategy;
 
 //require mongoose and models
-const User = require('../../main/models/User'); 
+const User = require('./main/models/User'); 
 
 
 //GOOGLE STRATEGY
@@ -66,19 +66,24 @@ const local = new LocalStrategy({
       passwordField: 'password'
     },
     async (email, password, done)  => {
+        try {
+            const user = await User.findOne({ email, authType: 'local' }).select('+password')
+            //throw error if no user
+            if(!user) throw new Error('Email not found')
+    
+            if(!user.verified) throw new Error('Account not verified. Please check your email and follow the link')
+          
+            //use usermethod to match passwords
+            const verify = await user.matchPassword(password);
+    
+            if(!verify) throw new Error('Incorrect password')
+    
+            done(null, user)
+        } catch (error) {
+            done(error, false)
+        }
         //check if email exists with local authType
-        const user = await User.findOne({ email, authType: 'local' }).select('+password')
-        //throw error if no user
-        if(!user) return done(new Error('Email not found'),  false)
 
-        if(!user.verified) return done(new Error('Account not verified. Please check your email and follow the link'), false )
-      
-        //use usermethod to match passwords
-        const verify = await user.matchPassword(password);
-
-        if(!verify) return done(new Error('Incorrect password'), false)
-
-        done(null, user)
     }
   );
 
